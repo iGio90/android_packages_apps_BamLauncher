@@ -370,16 +370,29 @@ public class LauncherModel extends BroadcastReceiver {
      */
     static void moveItemInDatabase(Context context, final ItemInfo item, final long container,
             final int screen, final int cellX, final int cellY) {
+
+        // We store hotseat items in canonical form which is this orientation invariant position
+        // in the hotseat
+        int screenEx = screen;
+        if (context instanceof Launcher && screen < 0 &&
+                container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
+            screenEx = ((Launcher) context).getHotseat().getOrderInHotseat(cellX, cellY);
+        }
+        int[] cells = {cellX, cellY};
+        if (context instanceof Launcher &&
+            container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
+            cells = ((Launcher)context).getHotseat().
+                        getDatabaseCellsFromLayout(new int[]{cellX, cellY});
+        }
+
         String transaction = "DbDebug    Modify item (" + item.title + ") in db, id: " + item.id +
                 " (" + item.container + ", " + item.screen + ", " + item.cellX + ", " + item.cellY +
-                ") --> " + "(" + container + ", " + screen + ", " + cellX + ", " + cellY + ")";
+                ") --> " + "(" + container + ", " + screenEx + ", " + cells[0] + ", " + cells[1] + ")";
         Launcher.sDumpLogs.add(transaction);
-        Log.d(TAG, transaction);
         item.container = container;
-        item.cellX = cellX;
-        item.cellY = cellY;
-
-        item.screen = screen;
+        item.cellX = cells[0];
+        item.cellY = cells[1];
+        item.screen = screenEx;
 
         final ContentValues values = new ContentValues();
         values.put(LauncherSettings.Favorites.CONTAINER, item.container);
@@ -395,16 +408,30 @@ public class LauncherModel extends BroadcastReceiver {
      */
     static void modifyItemInDatabase(Context context, final ItemInfo item, final long container,
             final int screen, final int cellX, final int cellY, final int spanX, final int spanY) {
+
+        // We store hotseat items in canonical form which is this orientation invariant position
+        // in the hotseat
+        int screenEx = screen;
+        if (context instanceof Launcher && screen < 0 &&
+                container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
+            screenEx = ((Launcher) context).getHotseat().getOrderInHotseat(cellX, cellY);
+        }
+        int[] cells = {cellX, cellY};
+        if (context instanceof Launcher &&
+            container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
+            cells = ((Launcher)context).getHotseat().
+                        getDatabaseCellsFromLayout(new int[]{cellX, cellY});
+        }
+
         String transaction = "DbDebug    Modify item (" + item.title + ") in db, id: " + item.id +
                 " (" + item.container + ", " + item.screen + ", " + item.cellX + ", " + item.cellY +
-                ") --> " + "(" + container + ", " + screen + ", " + cellX + ", " + cellY + ")";
+                ") --> " + "(" + container + ", " + screenEx + ", " + cells[0] + ", " + cells[1] + ")";
         Launcher.sDumpLogs.add(transaction);
-        Log.d(TAG, transaction);
-        item.cellX = cellX;
-        item.cellY = cellY;
+        item.cellX = cells[0];
+        item.cellY = cells[1];
         item.spanX = spanX;
         item.spanY = spanY;
-        item.screen = screen;
+        item.screen = screenEx;
 
         final ContentValues values = new ContentValues();
         values.put(LauncherSettings.Favorites.CONTAINER, item.container);
@@ -537,10 +564,25 @@ public class LauncherModel extends BroadcastReceiver {
      */
     static void addItemToDatabase(Context context, final ItemInfo item, final long container,
             final int screen, final int cellX, final int cellY, final boolean notify) {
+
+        // We store hotseat items in canonical form which is this orientation invariant position
+        // in the hotseat
+        int screenEx = screen;
+        if (context instanceof Launcher && screen < 0 &&
+                container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
+            screenEx = ((Launcher) context).getHotseat().getOrderInHotseat(cellX, cellY);
+        }
+        int[] cells = {cellX, cellY};
+        if (context instanceof Launcher &&
+            container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
+            cells = ((Launcher)context).getHotseat().
+                        getDatabaseCellsFromLayout(new int[]{cellX, cellY});
+        }
+
         item.container = container;
-        item.cellX = cellX;
-        item.cellY = cellY;
-        item.screen = screen;
+        item.cellX = cells[0];
+        item.cellY = cells[1];
+        item.screen = screenEx;
 
         final ContentValues values = new ContentValues();
         final ContentResolver cr = context.getContentResolver();
@@ -554,8 +596,8 @@ public class LauncherModel extends BroadcastReceiver {
         Runnable r = new Runnable() {
             public void run() {
                 String transaction = "DbDebug    Add item (" + item.title + ") to db, id: "
-                        + item.id + " (" + container + ", " + screen + ", " + cellX + ", "
-                        + cellY + ")";
+                        + item.id + " (" + container + ", " + item.screen + ", " + item.cellX + ", "
+                        + item.cellY + ")";
                 Launcher.sDumpLogs.add(transaction);
                 Log.d(TAG, transaction);
 
