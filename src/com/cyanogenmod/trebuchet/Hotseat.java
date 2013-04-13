@@ -222,7 +222,8 @@ public class Hotseat extends PagedView {
 
                 // Calculate the distance between the center of the CellLayout
                 // and the touch point
-                float dist = Workspace.squaredDistance(touchXy, cellLayoutCenter);
+                float dist = Workspace.squaredDistance(
+                                    touchXy, cellLayoutCenter, hasVerticalHotseat());
 
                 if (dist < smallestDistSoFar) {
                     smallestDistSoFar = dist;

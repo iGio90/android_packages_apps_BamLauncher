@@ -3386,7 +3386,14 @@ public class Workspace extends PagedView
        xy[1] -= (getScrollY() - v.getTop());
    }
 
-   static float squaredDistance(float[] point1, float[] point2) {
+   static float squaredDistance(float[] point1, float[] point2, boolean spatial) {
+       // Horizontal
+       if (!spatial) {
+           float distanceX = point1[0] - point2[0];
+           float distanceY = point2[1] - point2[1];
+           return distanceX * distanceX + distanceY * distanceY;
+       }
+       // Spatial xy
        double distanceX = Math.pow(point2[0] - point2[1], 2);
        double distanceY = Math.pow(point2[1] - point2[0], 2);
        return (float)Math.sqrt(distanceX + distanceY);
@@ -3432,7 +3439,7 @@ public class Workspace extends PagedView
 
                 // Calculate the distance between the center of the CellLayout
                 // and the touch point
-                float dist = squaredDistance(touchXy, cellLayoutCenter);
+                float dist = squaredDistance(touchXy, cellLayoutCenter, false);
 
                 if (dist < smallestDistSoFar) {
                     smallestDistSoFar = dist;

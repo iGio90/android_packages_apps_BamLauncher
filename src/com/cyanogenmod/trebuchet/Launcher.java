@@ -2177,7 +2177,9 @@ public final class Launcher extends Activity
             newFolder.setTextVisible(false);
         }
         int x = cellX, y = cellY;
-        if (container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
+        if (container == LauncherSettings.Favorites.CONTAINER_HOTSEAT &&
+            getHotseat().hasVerticalHotseat()) {
+
             // Note: If the destination of the new folder is the hotseat and
             // the hotseat is in vertical mode, then we need to invert the xy position,
             // so the addInScreen method will use the correct values to draw the new folder
