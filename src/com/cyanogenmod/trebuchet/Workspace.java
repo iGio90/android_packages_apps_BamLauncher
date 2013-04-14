@@ -1936,6 +1936,7 @@ public class Workspace extends PagedView
                 } else {
                     y -= (wallpaperHeight - (height + mWallpaperOffsets[1])) / 2;
                 }
+                y -= mWallpaperScrollY * (wallpaperHeight - (height + mWallpaperOffsets[1])) + mWallpaperOffsets[1];
             }
 
             canvas.drawBitmap(mWallpaperBitmap, x, y, mPaint);
