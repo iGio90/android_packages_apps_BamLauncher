@@ -32,6 +32,8 @@ import java.util.Arrays;
 public class Hotseat extends PagedView {
     private int mCellCount;
 
+    private int mDefaultPage;
+
     private boolean mTransposeLayoutWithOrientation;
     private boolean mIsLandscape;
     private boolean mLandscapeDockOnBottom;
@@ -62,7 +64,7 @@ public class Hotseat extends PagedView {
             defaultPage = hotseatPages / 2;
         }
 
-        mCurrentPage = defaultPage;
+        mCurrentPage = mDefaultPage = defaultPage;
 
         TypedArray a = context.obtainStyledAttributes(attrs,
                 R.styleable.Hotseat, defStyle, 0);
@@ -260,6 +262,15 @@ public class Hotseat extends PagedView {
             CellLayout cl = (CellLayout) getPageAt(i);
             cl.removeAllViewsInLayout();
         }
+    }
+
+    void moveToDefaultScreen(boolean animate) {
+        if (animate) {
+            snapToPage(mDefaultPage);
+        } else {
+            setCurrentPage(mDefaultPage);
+        }
+        getChildAt(mDefaultPage).requestFocus();
     }
 
     CellLayout getLayout() {
